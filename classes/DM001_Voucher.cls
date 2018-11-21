@@ -30,7 +30,8 @@ public class DM001_Voucher {
                 Promo_Campaign__r.Name, 
                 Promo_Campaign__r.Default_Outlet__c,
                 Customer__r.Full_Name__c,
-                Brand_Name__c
+                Brand_Name__c,
+				Loy_Member__c
                 from Member__c 
                 where id = :voucherId
             ];

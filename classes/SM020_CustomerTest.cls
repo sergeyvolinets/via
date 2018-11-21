@@ -49,9 +49,15 @@ public class SM020_CustomerTest
         req.addParameter('outlet', data.outlet.id);
         req.addParameter('txnpin', '1111');
         req.addParameter('amount','200');
-        SM019_Outlet.response();        
+        SM019_Outlet.response(); 
+        
+        		req.addParameter('type', 'submitTxn');  
+        req.addParameter('outlet', data.outlet.id);
+        req.addParameter('txnpin', '1111');
+        req.addParameter('amount','200');
+        SM019_Outlet.response();   
  
-         		req.addParameter('type', 'checkTxn');          
+        req.addParameter('type', 'checkTxn');          
         SM020_Customer.getResponse();
         
 		req.addParameter('type', 'getPromotions'); 

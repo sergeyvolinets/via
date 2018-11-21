@@ -7,6 +7,7 @@ global class SM012_Voucher
     global class VoucherResponse
     {
         public Member__c voucher{get;set;}
+        public integer ticketsCnt {get;set;}
         public string errorCode {get;set;}
         public string errorMessage {get;set;}
         public VoucherResponse()
@@ -72,10 +73,11 @@ global class SM012_Voucher
         string voucherId = (string)RestContext.request.params.get('id');   
         decimal dVal = decimal.valueOf(RestContext.request.params.get('amount')); 
         string pin = (string)RestContext.request.params.get('pin'); 
+        //integer qt = integer.valueOf(RestContext.request.params.get('qt'));
         ReedemResponse resp = new ReedemResponse();
         try
         {
-            resp.txnId = doReedem2(voucherId,dVal,pin,false);
+            resp.txnId = doReedem2(voucherId,dVal,pin,false,1);
         }catch(Exception ex)
         {
             resp.errorCode = '1';
@@ -84,9 +86,10 @@ global class SM012_Voucher
         return resp;
     }
     
-    global static id doReedem2(id voucherId, decimal dVal, string sPIN,boolean bRetLoyMember)
+    global static id doReedem2(id voucherId, decimal dVal, string sPIN,boolean bRetLoyMember, integer qt)
     {  
-        
+       if(qt == null || qt == 0)
+           qt = 1;
         CVL__Loy_Transaction__c tr;
         CVL__Loy_Transaction__c tr2;
         Member__c  voucher = DM001_Voucher.getRecord(voucherId);
@@ -162,6 +165,8 @@ global class SM012_Voucher
         {
             mem.Status__c = 'Active';                
         }
+        if(lmem!= null && mem.Loy_Member__c == null)
+        	mem.Loy_Member__c =lmem.id;
         update mem;
         
         Promo_Campaign__c camp = [select id,Total_Coupon_Inventory__c  from Promo_Campaign__c where id = :mem.Promo_Campaign__c];
@@ -194,17 +199,17 @@ global class SM012_Voucher
                     // TODO добавить поиск Promo Campaign с типом New Member Welcome и если такая есть, то добавлять ее новому Участнику Программы лояльности VIAF-13
                 }
             }
-            if(lmem.CVL__Points_2__c <dVal)
+            if(lmem.CVL__Points_2__c <dVal*qt)
 				throw new MyException( 'Not enough points.');     
             
-            decimal dNetTotal = dVal;
+            decimal dNetTotal = dVal*qt;
             if(mem.Promo_Campaign__r.Discount__c != null && mem.Promo_Campaign__r.Discount__c != 0)
             {
-                dNetTotal = dVal*(1-mem.Promo_Campaign__r.Discount__c/100);
+                dNetTotal = dVal*(1-mem.Promo_Campaign__r.Discount__c/100)*qt;
             }
             if(mem.Promo_Campaign__r.Discount_Amount__c != null && mem.Promo_Campaign__r.Discount_Amount__c != 0)
             {
-                dNetTotal = dNetTotal - mem.Promo_Campaign__r.Discount_Amount__c;
+                dNetTotal = (dNetTotal - mem.Promo_Campaign__r.Discount_Amount__c)*qt;
             }
             id parTranId = null;
             if(dNetTotal >0)
@@ -233,7 +238,7 @@ global class SM012_Voucher
                 tr2.Parent_Transaction__c = parTranId;
                 decimal points2 = 0;
                 if(mem.Promo_Campaign__r.Reedem_Amount__c != null && mem.Promo_Campaign__r.Reedem_Amount__c != 0 )
-                    points2 -= mem.Promo_Campaign__r.Reedem_Amount__c;
+                    points2 -= mem.Promo_Campaign__r.Reedem_Amount__c*qt;
                 if(mem.Promo_Campaign__r.Reedem_Rate__c != null && mem.Promo_Campaign__r.Reedem_Rate__c != 0 )
                     points2 -= dNetTotal * mem.Promo_Campaign__r.Reedem_Rate__c;
                 tr2.CVL__Points__c = points2;

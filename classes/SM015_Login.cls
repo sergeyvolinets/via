@@ -9,6 +9,7 @@ global class SM015_Login
         public string ProgramId {get;set;}
         public string SessionId {get;set;}
         
+        
         public LoginResponse()
         {
             ErrorCode = '';
@@ -35,7 +36,7 @@ global class SM015_Login
             }
             resp.RecordId = mem.id;
             resp.ProgramId = mem.CVL__Program__c;
-            resp.SessionId = SM005_Session.newSession(mem.id);
+            resp.SessionId = SM005_Session.newSession(mem.id,mem.CVL__Account__c);
         }
         catch(Exception e)
         {

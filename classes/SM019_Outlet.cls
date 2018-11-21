@@ -50,7 +50,7 @@ global class SM019_Outlet {
             if(test.isRunningTest())
                 throw (e);
              sErr = ''+e.getLineNumber()+' '+e.getMessage();
-             ret = SM007_engatiRest.message(sErr);
+             ret = SM007_engatiRest.message(sErr,null, 'outletMenu', sProgramId, slanguage);
             
         }
         SM005_Logs.LogCallOut(null,'chat2aiOutlet', JSON.serialize(RestContext.request.params), JSON.serialize(ret), DateTime.now(), DateTime.now(),sErr);
@@ -79,7 +79,7 @@ global class SM019_Outlet {
         string sPIN = SM010_Utils.getRestParam('outletpin');
         list<account> lAcc = [select id from account where PIN__c = :sPIN and Loy_Program__c = :sProgramId];
         if(lAcc.isEmpty())
-            return SM007_engatiRest.message(translate('Can not find any outlet with PIN=',slanguage)+sPIN,null,'outletLogin',sProgramId,slanguage);
+            return SM007_engatiRest.message(String.format(translate('Can not find any outlet with PIN= {0}',slanguage),new String[]{sPin}),null,'outletLogin',sProgramId,slanguage);
         map<string,string> mParams = new map<string,string> ();
         mParams.put('outlet', lAcc[0].id);
         mParams.put('program', sProgramId);
@@ -96,21 +96,25 @@ global class SM019_Outlet {
         decimal amount  = decimal.valueOf(SM010_Utils.getRestParam('amount'));
         list< CVL__Loy_Transaction__c> lTxn = [select id, createddate, CVL__Member__c,CVL__Accrued_Points_1__c  from CVL__Loy_Transaction__c where CVL__Member__r.CVL__Program__c = :sProgramId and PIN__c = :sPIN and CVL__Status__c = 'Initial'];
         if(lTxn.isEmpty())
-            return SM007_engatiRest.message(translate('Can not find the transaction with PIN ',slanguage)+sPIN+'.',null, 'outletMenu', sProgramId, slanguage);               
+            return SM007_engatiRest.message(String.format(translate('Can not find the transaction with PIN {0}.',slanguage),new String[]{sPin}),null, 'outletMenu', sProgramId, slanguage);               
         CVL__Loy_Transaction__c  txn = lTxn[0];
         if(SM020_Customer.GetElapsedSeconds(txn.CreatedDate,DateTime.now()) > (60*60*24))
-  			return SM007_engatiRest.message(translate('12 hours have passed. Please try another code.',slanguage),null, 'outletMenu', sProgramId, slanguage);
+            return SM007_engatiRest.message(translate('12 hours have passed. Please try another code.',slanguage),null, 'outletMenu', sProgramId, slanguage);
         txn.CVL__Points__c  = amount;
         txn.Account__c = sOutletId;
         txn.CVL__Status__c = 'Queued';
         update txn;
-        list<CVL__Loy_Member__c > lmem = [select id,CVL__Points_2__c,CVL__Points_1__c,Loy_Tier__r.Name, CVL__Account__r.Full_Name__c from CVL__Loy_Member__c where id = :txn.CVL__Member__c];
-        CVL__Loy_Member__c mem = lmem[0];
-   		 lTxn = [select id, CVL__Member__c,CVL__Accrued_Points_1__c,CVL__Accrued_Points_2__c  from CVL__Loy_Transaction__c where id = :txn.id];
-        	if(lTxn.isEmpty())
-            return SM007_engatiRest.message(translate('Can not find the transaction with PIN ',slanguage)+sPIN+'.',null, 'submitTxn', sProgramId, slanguage);               
+        CVL__Loy_Member__c mem = DM003_LoyMember.getRecord(txn.CVL__Member__c);
+        lTxn = [select id, CVL__Member__c,CVL__Accrued_Points_1__c,CVL__Accrued_Points_2__c,Account__r.name  from CVL__Loy_Transaction__c where id = :txn.id];
+        if(lTxn.isEmpty())
+            return SM007_engatiRest.message(String.format(translate('Can not find the transaction with PIN {0}.',slanguage),new String[]{sPin}),null, 'submitTxn', sProgramId, slanguage);               
         txn = lTxn[0];
-		return SM007_engatiRest.message(translate('The transaction has been proceded. Transaction: ',slanguage)+sPIN+translate('; Customer: ',slanguage)+mem.CVL__Account__r.Full_Name__c+translate('; Points Earned: ',slanguage)+txn.CVL__Accrued_Points_2__c+translate('; Balance: ',slanguage)+mem.CVL__Points_2__c,null, 'outletMenu', sProgramId, slanguage);
+        if(mem.Phone__C != null /*&& mem.Channel__c == 'WhatsApp'*/)
+        {
+            SM031_Nexmo.sendEarnConfirm(txn,mem);
+        }
+        
+        return SM007_engatiRest.message(String.format(translate('The transaction has been proceded. Transaction: {0}; Customer: {1}; Points Earned: {2}; Balance: {3}',slanguage),new String[]{sPIN,mem.CVL__Account__r.Full_Name__c,String.valueOf(txn.CVL__Accrued_Points_2__c),String.valueOf(mem.CVL__Points_2__c)}),null, 'outletMenu', sProgramId, slanguage);
     }
     
     private static string translate(string str, string language){

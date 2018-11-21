@@ -38,30 +38,6 @@ public class SM010_Utils
     
     public static string getFlowId(string flowName,string programId, string language)
     {
-        /*string sRet='';
-string sQl = 'select id, '+flowName+'__c from CVL__Loy_Program__c where id = \''+programId+'\'';
-list<sobject> lobj = Database.query(sQl);
-if(lObj.isEmpty())
-throw new MyException('Can\'t find loyalty program with id ['+programId+']');  
-sobject obj = lobj.get(0);
-sRet = (string) obj.get(flowName+'__c');
-if((sRet == null || sRet == '') && Test.isRunningTest() == false)
-throw new MyException('Flow '+flowName+' is not defined in loyalty program ['+programId+']. Please notify admin.');  
-return sRet;       */ 
-        /*
-// тут нет разбивки по programId
-Flow__c f = Flow__c.getInstance(flowName);//flowName+' '+language
-if(f == null)
-{
-if(Test.isRunningTest())
-return '';
-f = Flow__c.getInstance(flowName);
-if (f == null)
-throw new MyException('Can\'t find flow id for '+flowName+'in Flow custom settings. Please notify admin.');
-
-}
-return f.Value__c;
-*/
         return translate(flowName, language, true);
     }
     
@@ -76,8 +52,21 @@ return f.Value__c;
         }
         return ret;
     }
-    
-    public static string sProgramId=null;  
+    public static list< Translation__c> lTrans = new list< Translation__c>();
+    public static void saveTran()
+    {
+        if(!lTrans.isEmpty())
+        {
+            insert lTrans;
+            lTrans = new list< Translation__c>();
+        }
+    }
+    public static string sProgramId=null; 
+	public static string lang=null;    
+    public static string translate(string str)
+    {
+        return translate(str,lang,false);
+    }    
     public static string translate(string str, string sLang)
     {
         return translate(str,sLang,false);
@@ -105,7 +94,8 @@ return f.Value__c;
             tr.bFlow__c = bFlow;
             if(tr.bFlow__c != true)
                 tr.default_value__c = str;
-            insert tr;
+            lTrans.add(tr);
+ //           insert tr;
             sObj.add(tr);
         }
         else
@@ -125,24 +115,19 @@ return f.Value__c;
         if(str.endsWith(' '))
             sRet = ''+sret+' ';
         return sRet;
-        /*
-string trstr;
-if (language == 'ar')
-trstr = Translator.toArab.get(str);
-else if (language == 'Other')
-trstr = Translator.toOther.get(str);
-if (trstr != null && trstr != '')
-return trstr;
-else 
-return str;*/
     }
-    /* public String translate(String labelName, String language){
-PageReference r = Page.ZLabelTranslator;
-r.getParameters().put('label_lang', language);
-r.getParameters().put('label', labelName);  
-String labelValue = r.getContent().toString();
-return labelValue;
-}*/
-    
-    
+    public static string phone(string sPhone)
+    {
+        if(sPhone == null)
+            return null;
+        sPhone = sPhone.replaceAll('[^0-9]', '');
+        if(sPhone.indexOf('00')!=0)
+        {
+            if(sPhone.indexOf('0')!= 0)
+                sPhone = '00'+sPhone;
+            else
+                sPhone = '0'+sPhone;                
+        }
+        return sPhone;
+    }
 }

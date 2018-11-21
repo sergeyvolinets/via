@@ -28,30 +28,5 @@ public class SM012_VoucherTest
         Test.stopTest();
     }
     
-       static testMethod void testIt2()
-    {
-        Test.startTest(); 
-        SM001_DataFactory data = new SM001_DataFactory();
-         SM021_GenerateCodes codes = new SM021_GenerateCodes(new ApexPages.StandardController(data.camp));
-        codes.onGenerate();       
-                RestRequest req = new RestRequest(); 
-        RestResponse res = new RestResponse();
-        req.requestURI = '/services/apexrest/voucher2/';  
-        req.addParameter('id', data.mem2.id);
-        req.httpMethod = 'GET';    
-        
-        RestContext.request = req;
-        RestContext.response = res; 
-        req.addParameter('campId', data.camp.id);
-        req.addParameter('accId', data.cust.id);
-        SM012_Voucher.VoucherResponse resp = SM022_Voucher3.doGet();
-        
-        req.addParameter('amount', '100');
-        req.addParameter('pin', '111');
-        req.httpMethod = 'POST';
-        req.addParameter('id', data.mem.id);        
-        SM012_Voucher.ReedemResponse resp2 = SM022_Voucher3.doReedem();
-
-        Test.stopTest();
-    }
+ 
 }

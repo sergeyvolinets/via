@@ -10,8 +10,7 @@ public class VFC002_ReedemVoucher
     public decimal dVal {get;set;}
     public string sPIN {get;set;}
     public boolean bRender {get;set;}
-    
-    
+      
     public VFC002_ReedemVoucher() 
     { 
         bRender = true;
@@ -37,7 +36,7 @@ public class VFC002_ReedemVoucher
         id loyMemId =null;
         try
         {
-			loyMemId = SM012_Voucher.doReedem2(mem.id, dVal, sPIN,true);
+			loyMemId = SM012_Voucher.doReedem2(mem.id, dVal, sPIN,true,1);
         }catch(Exception e)
         {
             ApexPages.addMessage (new ApexPages.message(ApexPages.severity.ERROR, e.getMessage()));

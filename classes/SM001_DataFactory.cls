@@ -120,6 +120,7 @@ public class SM001_DataFactory
         lmem.CVL__Account__c = cust.id;
         lmem.CVL__Program__c = prog.id;
         lmem.CVL__Points_2__c = 20000;
+        lmem.IsActive__c = true;
         lmem.PIN__c = '1111';
         insert lmem;
     }

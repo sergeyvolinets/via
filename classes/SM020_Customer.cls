@@ -103,7 +103,13 @@ global class SM020_Customer
             {
                 try
                 {
+					                    
                     mem = DM003_LoyMember.getRecord(mId);
+                    if(fromFlow == 'getPromotions' || fromFlow == 'getChildCategories')
+                    {
+        				SM005_Session.refresh(mem);  
+                    	mem = DM003_LoyMember.getRecord(mId);
+                    }
                     memId = mem.Id;
                     accId = mem.CVL__Account__c;
                 }catch(MyException e)
@@ -116,7 +122,7 @@ global class SM020_Customer
     
     public static chat2AI.Resp changeLang(string sProgramId, string language)
     {
-        return SM007_engatiRest.message(translate('The language was changed to ',language)+translate(language,language)+'. ',null, null, sProgramId, language);  
+        return SM007_engatiRest.message(String.format(translate('The language was changed to {1} . ',language),new String[]{translate(language,language)}),null, null, sProgramId, language);  
     }
     
     /*   public static chat2AI.Resp setLanguage(string language){
@@ -160,7 +166,7 @@ return SM007_engatiRest.message('Choosed Arabian');
             lTxn = [select id, CreatedDate, CVL__Member__c,CVL__Accrued_Points_2__c,CVL__Status__c,CVL__Member__r.CVL__Points_2__c from CVL__Loy_Transaction__c where CVL__Member__r.CVL__Program__c = :sProgramId];
         
         if(lTxn.isEmpty())
-            return SM007_engatiRest.message(translate('Can not find the transaction with Id ',language)+txnId+'.',null, 'menu', sProgramId, language);
+            return SM007_engatiRest.message(String.format(translate('Can not find the transaction with Id {0} .',language), new String[]{txnId}),null, 'menu', sProgramId, language);
         
         CVL__Loy_Transaction__c txn = lTxn[0];
         
@@ -184,7 +190,7 @@ return SM007_engatiRest.message('Choosed Arabian');
         }
         if(txn.CVL__Status__c == 'Initial')
             return SM007_engatiRest.gotoFlow('Continue', sProgramId, language);
-        return getInfo(translate('Congradulations, you have successfully earned ',language)+ Integer.valueOf(txn.CVL__Accrued_Points_2__c)+translate(' points at ',language)+txn.Account__r.name +'\n', sProgramId, language);
+        return getInfo(String.format(translate('Congratulations, you have successfully earned {0} points at {1}',language),new String[]{String.valueOf(txn.CVL__Accrued_Points_2__c), txn.Account__r.name})+'\n', sProgramId, language);
     }
     
     public static chat2AI.Resp test(string sProgramId, string language)
@@ -209,7 +215,7 @@ return SM007_engatiRest.message('Choosed Arabian');
         map<string,string>mPar = new map<string,string>();
         mPar.put('txnId',txn.id);
         //mPar.put('flowName','earn');
-        chat2AI.Resp ret =SM007_engatiRest.message(translate('Please tell to cashier your PIN: ',language)+txn.PIN__c+translate(' (Customer PIN will expire in 12 hours)',language),mPar,'checkTxn', programId, language);
+        chat2AI.Resp ret =SM007_engatiRest.message(String.format(translate('Please tell to cashier your PIN: {0}',language),new String[]{txn.PIN__c})+'\n'+translate(' (Customer PIN will expire in 12 hours)',language),mPar,'checkTxn', programId, language);
         return ret;
     }
     public static chat2AI.Resp redeem(string programId, string language)
@@ -217,8 +223,12 @@ return SM007_engatiRest.message('Choosed Arabian');
         getLoyMember h = new getLoyMember(programId, language, 'redeem');
         if(h.resp != null)
             return h.resp;
-        
+		integer qt = 1; 
+        string sQt = SM010_Utils.getRestParam('qt');
+        if(sQt != '' && sQt != null)
+			qt = Integer.valueOf(SM010_Utils.getRestParam('qt'));
         string campId = SM010_Utils.getRestParam('campId'); 
+        //list<member__c> vouchers = new list<member__c>();
         member__c voucher = null;
         list<member__c> vouchers = [select id, Customer__c, Promo_Campaign__c from member__c where Customer__c = :h.accId and Promo_Campaign__c = :campId];
         if(vouchers.isEmpty())
@@ -230,7 +240,7 @@ return SM007_engatiRest.message('Choosed Arabian');
         }else
             voucher = vouchers[0];
         
-        list<voucher_code__c> lcodes =  [select id,name from voucher_code__c where Promo_Campaign__c  = :campId and Voucher__c =null LIMIT 1];
+        list<voucher_code__c> lcodes =  [select id,name from voucher_code__c where Promo_Campaign__c  = :campId and Voucher__c =null and quantity__c = :qt LIMIT 1];
         if(lcodes.isEmpty())
             return SM007_engatiRest.message(translate('There is no voucher codes left',language), null,'menu', programId, language);  
         
@@ -238,11 +248,13 @@ return SM007_engatiRest.message('Choosed Arabian');
         code.voucher__c = voucher.id;
         code.Status__c = 'Used';
         update code;
-        id txnId = SM012_Voucher.doReedem2(voucher.id,(decimal)0,null, false);
+        id txnId = SM012_Voucher.doReedem2(voucher.id,(decimal)0,null, false, qt);
         CVL__Loy_Member__c mem =  [select id,CVL__Points_1__c, CVL__Points_2__c, Loy_Tier__r.Name, CVL__Account__r.Full_Name__c from CVL__Loy_Member__c where id = :h.memId];
         map<string,string> mPar = new map<string,string>();
         mPar.put('txnId', txnId);
-        chat2AI.Resp ret = SM007_engatiRest.message(translate('The voucher code is',language)+code.name+translate('. The new balance is ',language)+mem.CVL__Points_2__c, mPar,'menu', programId, language);
+        //mPar.put('qt', qt);
+        chat2AI.Resp ret = SM007_engatiRest.message(String.format(translate('The voucher code is {0} .',language),new String[]{code.name})+'\n'+
+                                                    String.format(translate('The new balance is {0} .',language),new String[]{String.valueOf(mem.CVL__Points_2__c)}), mPar,'menu', programId, language);
         
         return ret;
     }
@@ -268,7 +280,7 @@ return SM007_engatiRest.message('Choosed Arabian');
         if(iTab<0)
             iTab = 0;
         decimal points = h.mem.CVL__Points_2__c;
-        
+        SM005_Session.refresh(h.mem);        
         list<promo_campaign__c> lCamp = 
             [
                 select id,
@@ -331,12 +343,14 @@ return SM007_engatiRest.message('Choosed Arabian');
             if(camp.Reedem_Amount__c != null && camp.Reedem_Amount__c !=0 && points > 0 && points > camp.Reedem_Amount__c)
             {
                 integer tic = Integer.valueof(points)/Integer.valueOf(camp.Reedem_Amount__c);
-                temp.Subtitle = translate('Take up to ',language)+tic+translate(' coupons.',language); 
+                //temp.Subtitle = translate('Take up to ',language)+tic+translate(' coupons.',language); 
+                temp.Subtitle = String.format(translate('Take up to {0} coupons.',language),new String[]{String.valueOf(tic)}); 
                 bShowButton = true;
             }
             else if (camp.Reedem_Amount__c != null && camp.Reedem_Amount__c !=0 && points != null && points < camp.Reedem_Amount__c)
             {
-                temp.Subtitle = (camp.Reedem_Amount__c-points) + translate(' points left to take coupon.',language); 
+                //temp.Subtitle = (camp.Reedem_Amount__c-points) + translate(' points left to take coupon.',language); 
+                temp.Subtitle = String.format(translate('{0} points left to take coupon.',language),new String[]{String.valueOf(camp.Reedem_Amount__c-points)});
             }
             else
             {
@@ -346,7 +360,7 @@ return SM007_engatiRest.message('Choosed Arabian');
             if(bShowButton)
             {
                 chat2AI.Button but = new chat2AI.Button();
-                but.payload = SM010_Utils.getValue('web_url')+'reedem3.html?campId='+camp.id+'&accId='+h.accId;
+                but.payload = SM010_Utils.getValue('web_url')+'redeem.html?campId='+camp.id+'&sessId='+h.mem.Session__c;
                 but.title = 'Redeem';
                 but.type = 'web_url';
                 temp.buttons.add(but);
@@ -379,10 +393,10 @@ return SM007_engatiRest.message('Choosed Arabian');
         string sKey = SM010_Utils.getRestParam('keyword');
 		list<keyword__c> lKey = [select id,promo_campaign__c from keyword__c where name =:sKey];
         if(lKey.isEmpty())
-            return SM007_engatiRest.message(translate('Can not find any matches for ',language)+sKey,null,'menu',sProgramId, language); 
+            return SM007_engatiRest.message(String.format(translate('Can not find any matches for {0}',language),new String[]{sKey}),null,'menu',sProgramId, language); 
         map<string,string> mPar = new map<string,string>();
         mPar.put('campId',lKey[0].promo_campaign__c);
-        return SM007_engatiRest.message(translate('Please find results for: ',language)+sKey,mPar,'getChildCategories', sProgramId, language);
+        return SM007_engatiRest.message(String.format(translate('Please find results for: {0}',language),new String[]{sKey}),mPar,'getChildCategories', sProgramId, language);
     }
      
     public static chat2AI.Resp getCat(string sProgramId, string language)
@@ -476,12 +490,12 @@ return SM007_engatiRest.message('Choosed Arabian');
                 if(camp.Reedem_Amount__c != null && camp.Reedem_Amount__c !=0 && points > 0 && points > camp.Reedem_Amount__c)
                 {
                     integer tic = Integer.valueof(points)/Integer.valueOf(camp.Reedem_Amount__c);
-                    temp.Subtitle = translate('Take up to ',language)+tic+translate(' coupons.',language); 
+                    temp.Subtitle = String.format(translate('Take up to {0} coupons.',language),new String[]{String.valueOf(tic)}); 
                     bShowButton = true;
                 }
                 else if (camp.Reedem_Amount__c != null && camp.Reedem_Amount__c !=0 && points != null && points < camp.Reedem_Amount__c)
                 {
-                    temp.Subtitle = (camp.Reedem_Amount__c-points) + translate(' points left to take coupon.',language); 
+                    temp.Subtitle = String.format(translate('{0} points left to take coupon.',language),new String[]{String.valueOf(camp.Reedem_Amount__c-points)}); 
                 }
                 else
                 {
@@ -491,7 +505,8 @@ return SM007_engatiRest.message('Choosed Arabian');
                 if(bShowButton)
                 {
                     chat2AI.Button but = new chat2AI.Button();
-                    but.payload = SM010_Utils.getValue('web_url')+'reedem3.html?campId='+camp.id+'&accId='+h.accId;
+                    but.payload = SM010_Utils.getValue('web_url')+'redeem.html?campId='+camp.id+'&sessId='+h.mem.Session__c;
+  //                  but.payload = SM010_Utils.getValue('web_url')+'redeem.html?campId='+camp.id+'&accId='+h.accId;
                     but.title = 'Redeem';
                     but.type = 'web_url';
                     temp.buttons.add(but); 
@@ -528,7 +543,7 @@ return SM007_engatiRest.message('Choosed Arabian');
     
     private static chat2AI.Resp login(string sProgramId, string language)
     {
-        string sPhone = SM010_Utils.getRestParam('phone');
+        string sPhone = SM010_Utils.phone(SM010_Utils.getRestParam('phone'));
         string sPhone2 = '%'+sPhone;
         string fromFlow = SM010_Utils.getRestParam('fromFlow');
         if (fromFlow == null || fromFlow == '')
@@ -647,7 +662,7 @@ return SM007_engatiRest.message(translate('The entered PINs mismatch.',language)
             ];
         CVL__Loy_Member__c mem =  [select id,CVL__Points_1__c, CVL__Points_2__c, Tier_Name__c, CVL__Program__r.Name from CVL__Loy_Member__c where id = :h.memId];
         if (mem != null){
-            sMess = sMess+translate('Your balance is ',language)+mem.CVL__Points_2__c+translate(' points. ',language)+'\n';
+            sMess = sMess+String.format(translate('Your balance is {0} points.',language),new String[]{String.valueOf(mem.CVL__Points_2__c)})+'\n';
             //         sMess += translate('Your tier is ',language)+mem.Tier_Name__c+'. ';
             //        sMess += translate('Your program is ',language)+mem.CVL__Program__r.Name+'.';
         }else
@@ -657,15 +672,11 @@ return SM007_engatiRest.message(translate('The entered PINs mismatch.',language)
         if(tic < 1)//if(!lCamp.isEmpty())
         {
             integer miss = Integer.valueOf(lCamp[0].Reedem_Amount__c)-Integer.valueof(mem.CVL__Points_2__c);
-            sMess = sMess + translate('You are missing ',language)+miss+translate(' points to get ',language)+lCamp[0].name+translate(' for free.',language);
+            sMess = sMess + String.format(translate('Earn {0} more points to get complimentary movie ticket from Cinescape!',language),new String[]{String.valueOf(miss), lCamp[0].name});
         }else if(tic == 1){
-            sMess = sMess + translate('You are now eligible for a ',language)+tic+translate(' complimentary ticket ',language)
-                +lCamp[0].Promo_message__c
-                +translate(' on us. Would you like to redeem it now?',language);
+            sMess = sMess + String.format(translate('You are now eligible for a 1 {0} on us. Would you like to redeem it now?',language),new String[]{lCamp[0].Promo_message__c});
         }else if(tic > 1){
-            sMess = sMess + translate('You are now eligible for ',language)+tic+translate(' complimentary tickets ',language)
-                +lCamp[0].Promo_message__c
-                +translate(' on us. Would you like to redeem it now?',language);
+            sMess = sMess + String.format(translate('You are now eligible for a {0} {1}s on us. Would you like to redeem it now?',language),new String[]{String.valueOf(tic), lCamp[0].Promo_message__c});
         }
         return SM007_engatiRest.getMenu(sMess,  sProgramId,  language,  tic);
         
@@ -723,7 +734,7 @@ return SM007_engatiRest.message(translate('The entered PINs mismatch.',language)
             ];
         CVL__Loy_Member__c mem =  [select id,CVL__Points_1__c, CVL__Points_2__c, Tier_Name__c, CVL__Program__r.Name from CVL__Loy_Member__c where id = :h.memId];
         if (mem != null){
-            sMess = sMess+translate('Your balance is ',language)+mem.CVL__Points_2__c+translate(' points. ',language)+'\n';
+            sMess = sMess+translate('Your balance is ',language)+'/n'+mem.CVL__Points_2__c+'/n'+translate(' points. ',language)+'\n';
             //         sMess += translate('Your tier is ',language)+mem.Tier_Name__c+'. ';
             //        sMess += translate('Your program is ',language)+mem.CVL__Program__r.Name+'.';
         }else

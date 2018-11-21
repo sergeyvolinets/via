@@ -4,8 +4,7 @@ public class SM015_LoginTest {
     {
         Test.startTest(); 
         SM001_DataFactory data = new SM001_DataFactory();
-        
-        
+            
         RestRequest req = new RestRequest(); 
         RestResponse res = new RestResponse();
         req.requestURI = '/services/apexrest/chat2AI/';  

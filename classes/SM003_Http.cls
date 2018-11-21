@@ -58,7 +58,12 @@ public class SM003_Http
         }
         finally
         {
-            SM005_Logs.LogCallOut(recId,callType, request.getBody(),  response.getBody(),  dtBeg,  dtEnd, sErrorMessage);
+            string respBody = '',reqBody = '';
+            if(response != null)
+                respBody = response.getBody();
+            if(request != null)
+                reqBody = request.getBody();
+            SM005_Logs.LogCallOut(recId,callType, reqBody,  respBody,  dtBeg,  dtEnd, sErrorMessage);
         }
         return response;    
     }

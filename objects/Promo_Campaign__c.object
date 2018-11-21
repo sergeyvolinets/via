@@ -430,6 +430,24 @@ Discount_Calc__c &lt;&gt;&apos;&apos;,
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <webLinks>
+        <fullName>Generate_Codes</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>page</linkType>
+        <masterLabel>Generate Codes</masterLabel>
+        <openType>newWindow</openType>
+        <page>VFP021_GenerateCode</page>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+    </webLinks>
+    <webLinks>
         <fullName>Generate_Voucher_Codes</fullName>
         <availability>online</availability>
         <displayType>button</displayType>

@@ -12,7 +12,7 @@ public class SM022_OutletsSearch
             	mret.put(cat.account__r.id,null);
         }
         
-        list<account>lacc = [select id, name,Image__c,phone from account where Loy_Program__c =:programId and (id in :mret.keySet() or name like :sKeyWord) order by name];
+        list<account>lacc = [select id, name,Image__c,phone,website from account where Loy_Program__c =:programId and (id in :mret.keySet() or name like :sKeyWord) order by name];
         for(account acc :lAcc)
         {
             mret.put(acc.id,acc);
@@ -89,9 +89,13 @@ public class SM022_OutletsSearch
             temp.title = acc.name;
             temp.image_url = acc.image__c;
             chat2AI.Button but = new chat2AI.Button();
-            but.payload = 'https://google.com/';
+  /*          but.payload = 'https://google.com/';
             but.title = SM020_customer.translate('Call Now ',language)+acc.Phone;
             but.type = 'web_url';
+*/
+            but.payload = acc.Phone;
+            but.title = SM020_customer.translate('Call Now ',language);
+            but.type = 'phone_number ';
 			temp.buttons.add(but); 
             
             ret.data.templates.add(temp);         

@@ -3,7 +3,7 @@
     <apiVersion>43.0</apiVersion>
     <packageVersions>
         <majorNumber>1</majorNumber>
-        <minorNumber>3</minorNumber>
+        <minorNumber>7</minorNumber>
         <namespace>CVL</namespace>
     </packageVersions>
     <status>Active</status>

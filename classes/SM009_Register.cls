@@ -138,7 +138,7 @@ global class SM009_Register
             insert acc;           
         }
         CVL__Loy_Member__c mem = null;
-        list<CVL__Loy_Member__c> lMem = [select id,CVL__Account__c from CVL__Loy_Member__c where CVL__Account__c = :acc.id and CVL__Program__c = :sProgramId];
+        list<CVL__Loy_Member__c> lMem = [select id,CVL__Account__c,WhatsAppContext__c from CVL__Loy_Member__c where CVL__Account__c = :acc.id and CVL__Program__c = :sProgramId];
         if(!lMem.isEmpty())
         {
             mem = lMem[0];
@@ -150,8 +150,10 @@ global class SM009_Register
             mem.CVL__Account__c  = acc.id;
             mem.CVL__Joined_Date__c = date.today();
             mem.PIN__c = sPIN;
+            mem.WhatsAppContext__c  = 'getName';
             insert mem;    
         }
+        
         SM006_CheckSms.sendSms(mem.Id);            
 		return mem;  
     }

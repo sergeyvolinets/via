@@ -21,11 +21,12 @@ global class SM006_CheckSms
         try
         {
             string memberId = (string)RestContext.request.params.get('memberId');  
-            string code = (string)RestContext.request.params.get('code');             
-            validate(memberId,code);
+            string code = (string)RestContext.request.params.get('code'); 
+            
+            CVL__Loy_Member__c mem =validate(memberId,code);
             if(AutoLogin())
             {
-                resp.sessionId = SM005_Session.newSession(memberId);
+                resp.sessionId = SM005_Session.newSession(memberId,mem.CVL__Account__c);
             }
         }catch(Exception e)
         {
@@ -46,7 +47,7 @@ global class SM006_CheckSms
         SM004_SMS.sendSms(mem.CVL__Account__r.phone,mem.SMSCode__c,mem.id,mem.CVL__Program__r.Name);
     }
     
-    public static void validate(id memId, string smscode)
+    public static CVL__Loy_Member__c validate(id memId, string smscode)
     {
         if(smscode != null)
         {
@@ -62,6 +63,7 @@ global class SM006_CheckSms
         }
         mem.IsActive__c = true;
         update mem;
+        return mem;
     }
     
     public static boolean AutoLogin()

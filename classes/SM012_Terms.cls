@@ -12,6 +12,10 @@ global class SM012_Terms
         SM012_Voucher.VoucherResponse resp = new SM012_Voucher.VoucherResponse();
         try
         {
+            integer i=0;
+            i++;
+            i++;
+            i++;
             string voucherId = (string)RestContext.request.params.get('id');    
             resp.voucher = DM001_Voucher.getTerms(voucherId);
         }catch(Exception ex)
