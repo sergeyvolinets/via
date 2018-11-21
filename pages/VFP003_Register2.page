@@ -1,0 +1,331 @@
+<apex:page showHeader="false" sidebar="false" cache="false"  controller="VFC003_Register"  docType="html-5.0"> 
+    <html>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+        
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+        <apex:stylesheet value="{!URLFOR($Resource.fontawesome,'/font-awesome-4.7.0/css/font-awesome.css')}"/>
+        <style type="text/css">
+            .slds-scope.slds-input {
+            max-width: 200px;
+            }
+            .checkbox {
+            min-height: 1rem !important;
+            max-width: 3% !important;
+            }
+            .welcomecontainer {
+            margin: 45px 0;
+            color: #0c0c99;
+            font-size: medium;
+            font-style: normal;
+            font-weight: bold;
+            }		
+            
+        </style>
+     <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script type="text/javascript">
+
+        window.addEventListener('load', function(e) {
+            setTimeout(function() { window.scrollTo(0, 1); }, 1);
+        }, false);
+        function timestamp() 
+    { 
+        var response = document.getElementById("g-recaptcha-response"); 
+        if (response == null || response.value.trim() == "") 
+        {
+            var elems = JSON.parse(document.getElementsByName("captcha_settings")[0].value);
+            elems["ts"] = JSON.stringify(new Date().getTime());
+            document.getElementsByName("captcha_settings")[0].value = JSON.stringify(elems); 
+        } 
+    } setInterval(timestamp, 500); 
+
+    
+    </script>        
+        <apex:slds rendered="true"/>
+   <!--     <apex:pageMessages id="idMess"/>-->
+        <apex:form id="idform" rendered="{!bRender}">  
+            <apex:outputPanel id="page">
+                <div class="demo-only slds-grid slds-align_absolute-center" style="height: 845px; max-width: 420px; background-color: rgb(244, 246, 249); padding: 1rem; background-position: initial initial; background-repeat: initial initial;">
+                    <div class="slds-panel slds-grid slds-grid_vertical slds-nowrap">
+                        <div class="slds-form slds-form_stacked slds-grow slds-scrollable_y">
+                            <div class="slds-panel__section">
+                                <div class="slds-media slds-align_absolute-center">
+                                    <apex:image value="{!imageURL}" id="theImage" width="150px"></apex:image>
+                                </div>
+                            </div>
+                            
+                            <div class="slds-panel__section">
+                                <ul>
+                                    <li class="slds-form-element slds-hint-parent">
+                                        <div class="welcomecontainer slds-align_absolute-center">Sign up for {!sCampaignName}</div>                            
+                                    </li> 
+                                    <li class="slds-form-element slds-hint-parent">
+                       <!--                 <div class="welcomecontainer slds-align_absolute-center">{!sPromoMessage}</div>        -->                    
+                                    </li>                                        
+                                    <li class="slds-form-element slds-hint-parent">                                    
+                                        <div class="input-group btn-group slds-align_absolute-center" id="userid" style="max-width:300px;">	
+                                            <label class="col-xs-6 control-label" style="font-size: small;">Nationality</label> 
+                                            <apex:selectList styleClass="slds-input slds-align_absolute-center" id="idnationality" value="{!nationality}" size="1"  style="font-size: medium;height:30px;">
+                                                <apex:selectOption itemValue="" itemLabel="- Please Select -"/>
+                                                <apex:selectOption itemValue="afghan" itemLabel="Afghan"/>
+                                                <apex:selectOption itemValue="albanian" itemLabel="Albanian"/>
+                                                <apex:selectOption itemValue="algerian" itemLabel="Algerian"/>
+                                                <apex:selectOption itemValue="american" itemLabel="American"/>
+                                                <apex:selectOption itemValue="andorran" itemLabel="Andorran"/>
+                                                <apex:selectOption itemValue="angolan" itemLabel="Angolan"/>
+                                                <apex:selectOption itemValue="antiguans" itemLabel="Antiguans"/>
+                                                <apex:selectOption itemValue="argentinean" itemLabel="Argentinean"/>
+                                                <apex:selectOption itemValue="armenian" itemLabel="Armenian"/>
+                                                <apex:selectOption itemValue="australian" itemLabel="Australian"/>
+                                                <apex:selectOption itemValue="austrian" itemLabel="Austrian"/>
+                                                <apex:selectOption itemValue="azerbaijani" itemLabel="Azerbaijani"/>
+                                                <apex:selectOption itemValue="bahamian" itemLabel="Bahamian"/>
+                                                <apex:selectOption itemValue="bahraini" itemLabel="Bahraini"/>
+                                                <apex:selectOption itemValue="bangladeshi" itemLabel="Bangladeshi"/>
+                                                <apex:selectOption itemValue="barbadian" itemLabel="Barbadian"/>
+                                                <apex:selectOption itemValue="barbudans" itemLabel="Barbudans"/>
+                                                <apex:selectOption itemValue="batswana" itemLabel="Batswana"/>
+                                                <apex:selectOption itemValue="belarusian" itemLabel="Belarusian"/>
+                                                <apex:selectOption itemValue="belgian" itemLabel="Belgian"/>
+                                                <apex:selectOption itemValue="belizean" itemLabel="Belizean"/>
+                                                <apex:selectOption itemValue="beninese" itemLabel="Beninese"/>
+                                                <apex:selectOption itemValue="bhutanese" itemLabel="Bhutanese"/>
+                                                <apex:selectOption itemValue="bolivian" itemLabel="Bolivian"/>
+                                                <apex:selectOption itemValue="bosnian" itemLabel="Bosnian"/>
+                                                <apex:selectOption itemValue="brazilian" itemLabel="Brazilian"/>
+                                                <apex:selectOption itemValue="british" itemLabel="British"/>
+                                                <apex:selectOption itemValue="bruneian" itemLabel="Bruneian"/>
+                                                <apex:selectOption itemValue="bulgarian" itemLabel="Bulgarian"/>
+                                                <apex:selectOption itemValue="burkinabe" itemLabel="Burkinabe"/>
+                                                <apex:selectOption itemValue="burmese" itemLabel="Burmese"/>
+                                                <apex:selectOption itemValue="burundian" itemLabel="Burundian"/>
+                                                <apex:selectOption itemValue="cambodian" itemLabel="Cambodian"/>
+                                                <apex:selectOption itemValue="cameroonian" itemLabel="Cameroonian"/>
+                                                <apex:selectOption itemValue="canadian" itemLabel="Canadian"/>
+                                                <apex:selectOption itemValue="cape verdean" itemLabel="Cape Verdean"/>
+                                                <apex:selectOption itemValue="central african" itemLabel="Central African"/>
+                                                <apex:selectOption itemValue="chadian" itemLabel="Chadian"/>
+                                                <apex:selectOption itemValue="chilean" itemLabel="Chilean"/>
+                                                <apex:selectOption itemValue="chinese" itemLabel="Chinese"/>
+                                                <apex:selectOption itemValue="colombian" itemLabel="Colombian"/>
+                                                <apex:selectOption itemValue="comoran" itemLabel="Comoran"/>
+                                                <apex:selectOption itemValue="congolese" itemLabel="Congolese"/>
+                                                <apex:selectOption itemValue="costa rican" itemLabel="Costa Rican"/>
+                                                <apex:selectOption itemValue="croatian" itemLabel="Croatian"/>
+                                                <apex:selectOption itemValue="cuban" itemLabel="Cuban"/>
+                                                <apex:selectOption itemValue="cypriot" itemLabel="Cypriot"/>
+                                                <apex:selectOption itemValue="czech" itemLabel="Czech"/>
+                                                <apex:selectOption itemValue="danish" itemLabel="Danish"/>
+                                                <apex:selectOption itemValue="djibouti" itemLabel="Djibouti"/>
+                                                <apex:selectOption itemValue="dominican" itemLabel="Dominican"/>
+                                                <apex:selectOption itemValue="dutch" itemLabel="Dutch"/>
+                                                <apex:selectOption itemValue="east timorese" itemLabel="East Timorese"/>
+                                                <apex:selectOption itemValue="ecuadorean" itemLabel="Ecuadorean"/>
+                                                <apex:selectOption itemValue="egyptian" itemLabel="Egyptian"/>
+                                                <apex:selectOption itemValue="emiratis" itemLabel="Emiratis"/>
+                                                <apex:selectOption itemValue="equatorial guinean" itemLabel="Equatorial Guinean"/>
+                                                <apex:selectOption itemValue="eritrean" itemLabel="Eritrean"/>
+                                                <apex:selectOption itemValue="estonian" itemLabel="Estonian"/>
+                                                <apex:selectOption itemValue="ethiopian" itemLabel="Ethiopian"/>
+                                                <apex:selectOption itemValue="fijian" itemLabel="Fijian"/>
+                                                <apex:selectOption itemValue="filipino" itemLabel="Filipino"/>
+                                                <apex:selectOption itemValue="finnish" itemLabel="Finnish"/>
+                                                <apex:selectOption itemValue="french" itemLabel="French"/>
+                                                <apex:selectOption itemValue="gabonese" itemLabel="Gabonese"/>
+                                                <apex:selectOption itemValue="gambian" itemLabel="Gambian"/>
+                                                <apex:selectOption itemValue="georgian" itemLabel="Georgian"/>
+                                                <apex:selectOption itemValue="german" itemLabel="German"/>
+                                                <apex:selectOption itemValue="ghanaian" itemLabel="Ghanaian"/>
+                                                <apex:selectOption itemValue="greek" itemLabel="Greek"/>
+                                                <apex:selectOption itemValue="grenadian" itemLabel="Grenadian"/>
+                                                <apex:selectOption itemValue="guatemalan" itemLabel="Guatemalan"/>
+                                                <apex:selectOption itemValue="guinea-bissauan" itemLabel="Guinea-Bissauan"/>
+                                                <apex:selectOption itemValue="guinean" itemLabel="Guinean"/>
+                                                <apex:selectOption itemValue="guyanese" itemLabel="Guyanese"/>
+                                                <apex:selectOption itemValue="haitian" itemLabel="Haitian"/>
+                                                <apex:selectOption itemValue="herzegovinian" itemLabel="Herzegovinian"/>
+                                                <apex:selectOption itemValue="honduran" itemLabel="Honduran"/>
+                                                <apex:selectOption itemValue="hungarian" itemLabel="Hungarian"/>
+                                                <apex:selectOption itemValue="icelander" itemLabel="Icelander"/>
+                                                <apex:selectOption itemValue="indian" itemLabel="Indian"/>
+                                                <apex:selectOption itemValue="indonesian" itemLabel="Indonesian"/>
+                                                <apex:selectOption itemValue="iranian" itemLabel="Iranian"/>
+                                                <apex:selectOption itemValue="iraqi" itemLabel="Iraqi"/>
+                                                <apex:selectOption itemValue="irish" itemLabel="Irish"/>
+                                                <apex:selectOption itemValue="israeli" itemLabel="Israeli"/>
+                                                <apex:selectOption itemValue="italian" itemLabel="Italian"/>
+                                                <apex:selectOption itemValue="ivorian" itemLabel="Ivorian"/>
+                                                <apex:selectOption itemValue="jamaican" itemLabel="Jamaican"/>
+                                                <apex:selectOption itemValue="japanese" itemLabel="Japanese"/>
+                                                <apex:selectOption itemValue="jordanian" itemLabel="Jordanian"/>
+                                                <apex:selectOption itemValue="kazakhstani" itemLabel="Kazakhstani"/>
+                                                <apex:selectOption itemValue="kenyan" itemLabel="Kenyan"/>
+                                                <apex:selectOption itemValue="kittian and nevisian" itemLabel="Kittian and Nevisian"/>
+                                                <apex:selectOption itemValue="kuwaiti" itemLabel="Kuwaiti"/>
+                                                <apex:selectOption itemValue="kyrgyz" itemLabel="Kyrgyz"/>
+                                                <apex:selectOption itemValue="laotian" itemLabel="Laotian"/>
+                                                <apex:selectOption itemValue="latvian" itemLabel="Latvian"/>
+                                                <apex:selectOption itemValue="lebanese" itemLabel="Lebanese"/>
+                                                <apex:selectOption itemValue="liberian" itemLabel="Liberian"/>
+                                                <apex:selectOption itemValue="libyan" itemLabel="Libyan"/>
+                                                <apex:selectOption itemValue="liechtensteiner" itemLabel="Liechtensteiner"/>
+                                                <apex:selectOption itemValue="lithuanian" itemLabel="Lithuanian"/>
+                                                <apex:selectOption itemValue="luxembourger" itemLabel="Luxembourger"/>
+                                                <apex:selectOption itemValue="macedonian" itemLabel="Macedonian"/>
+                                                <apex:selectOption itemValue="malagasy" itemLabel="Malagasy"/>
+                                                <apex:selectOption itemValue="malawian" itemLabel="Malawian"/>
+                                                <apex:selectOption itemValue="malaysian" itemLabel="Malaysian"/>
+                                                <apex:selectOption itemValue="maldivan" itemLabel="Maldivan"/>
+                                                <apex:selectOption itemValue="malian" itemLabel="Malian"/>
+                                                <apex:selectOption itemValue="maltese" itemLabel="Maltese"/>
+                                                <apex:selectOption itemValue="marshallese" itemLabel="Marshallese"/>
+                                                <apex:selectOption itemValue="mauritanian" itemLabel="Mauritanian"/>
+                                                <apex:selectOption itemValue="mauritian" itemLabel="Mauritian"/>
+                                                <apex:selectOption itemValue="mexican" itemLabel="Mexican"/>
+                                                <apex:selectOption itemValue="micronesian" itemLabel="Micronesian"/>
+                                                <apex:selectOption itemValue="moldovan" itemLabel="Moldovan"/>
+                                                <apex:selectOption itemValue="monacan" itemLabel="Monacan"/>
+                                                <apex:selectOption itemValue="mongolian" itemLabel="Mongolian"/>
+                                                <apex:selectOption itemValue="moroccan" itemLabel="Moroccan"/>
+                                                <apex:selectOption itemValue="mosotho" itemLabel="Mosotho"/>
+                                                <apex:selectOption itemValue="motswana" itemLabel="Motswana"/>
+                                                <apex:selectOption itemValue="mozambican" itemLabel="Mozambican"/>
+                                                <apex:selectOption itemValue="namibian" itemLabel="Namibian"/>
+                                                <apex:selectOption itemValue="nauruan" itemLabel="Nauruan"/>
+                                                <apex:selectOption itemValue="nepalese" itemLabel="Nepalese"/>
+                                                <apex:selectOption itemValue="new zealander" itemLabel="New Zealander"/>
+                                                <apex:selectOption itemValue="ni-vanuatu" itemLabel="Ni-Vanuatu"/>
+                                                <apex:selectOption itemValue="nicaraguan" itemLabel="Nicaraguan"/>
+                                                <apex:selectOption itemValue="nigerien" itemLabel="Nigerien"/>
+                                                <apex:selectOption itemValue="north korean" itemLabel="North Korean"/>
+                                                <apex:selectOption itemValue="northern irish" itemLabel="Northern Irish"/>
+                                                <apex:selectOption itemValue="norwegian" itemLabel="Norwegian"/>
+                                                <apex:selectOption itemValue="omani" itemLabel="Omani"/>
+                                                <apex:selectOption itemValue="pakistani" itemLabel="Pakistani"/>
+                                                <apex:selectOption itemValue="palauan" itemLabel="Palauan"/>
+                                                <apex:selectOption itemValue="panamanian" itemLabel="Panamanian"/>
+                                                <apex:selectOption itemValue="papua new guinean" itemLabel="Papua New Guinean"/>
+                                                <apex:selectOption itemValue="paraguayan" itemLabel="Paraguayan"/>
+                                                <apex:selectOption itemValue="peruvian" itemLabel="Peruvian"/>
+                                                <apex:selectOption itemValue="polish" itemLabel="Polish"/>
+                                                <apex:selectOption itemValue="portuguese" itemLabel="Portuguese"/>
+                                                <apex:selectOption itemValue="qatari" itemLabel="Qatari"/>
+                                                <apex:selectOption itemValue="romanian" itemLabel="Romanian"/>
+                                                <apex:selectOption itemValue="russian" itemLabel="Russian"/>
+                                                <apex:selectOption itemValue="rwandan" itemLabel="Rwandan"/>
+                                                <apex:selectOption itemValue="saint lucian" itemLabel="Saint Lucian"/>
+                                                <apex:selectOption itemValue="salvadoran" itemLabel="Salvadoran"/>
+                                                <apex:selectOption itemValue="samoan" itemLabel="Samoan"/>
+                                                <apex:selectOption itemValue="san marinese" itemLabel="San Marinese"/>
+                                                <apex:selectOption itemValue="sao tomean" itemLabel="Sao Tomean"/>
+                                                <apex:selectOption itemValue="saudi" itemLabel="Saudi"/>
+                                                <apex:selectOption itemValue="scottish" itemLabel="Scottish"/>
+                                                <apex:selectOption itemValue="senegalese" itemLabel="Senegalese"/>
+                                                <apex:selectOption itemValue="serbian" itemLabel="Serbian"/>
+                                                <apex:selectOption itemValue="seychellois" itemLabel="Seychellois"/>
+                                                <apex:selectOption itemValue="sierra leonean" itemLabel="Sierra Leonean"/>
+                                                <apex:selectOption itemValue="singaporean" itemLabel="Singaporean"/>
+                                                <apex:selectOption itemValue="slovakian" itemLabel="Slovakian"/>
+                                                <apex:selectOption itemValue="slovenian" itemLabel="Slovenian"/>
+                                                <apex:selectOption itemValue="solomon islander" itemLabel="Solomon Islander"/>
+                                                <apex:selectOption itemValue="somali" itemLabel="Somali"/>
+                                                <apex:selectOption itemValue="south african" itemLabel="South African"/>
+                                                <apex:selectOption itemValue="south korean" itemLabel="South Korean"/>
+                                                <apex:selectOption itemValue="spanish" itemLabel="Spanish"/>
+                                                <apex:selectOption itemValue="sri lankan" itemLabel="Sri Lankan"/>
+                                                <apex:selectOption itemValue="sudanese" itemLabel="Sudanese"/>
+                                                <apex:selectOption itemValue="surinamer" itemLabel="Surinamer"/>
+                                                <apex:selectOption itemValue="swazi" itemLabel="Swazi"/>
+                                                <apex:selectOption itemValue="swedish" itemLabel="Swedish"/>
+                                                <apex:selectOption itemValue="swiss" itemLabel="Swiss"/>
+                                                <apex:selectOption itemValue="syrian" itemLabel="Syrian"/>
+                                                <apex:selectOption itemValue="taiwanese" itemLabel="Taiwanese"/>
+                                                <apex:selectOption itemValue="tajik" itemLabel="Tajik"/>
+                                                <apex:selectOption itemValue="tanzanian" itemLabel="Tanzanian"/>
+                                                <apex:selectOption itemValue="thai" itemLabel="Thai"/>
+                                                <apex:selectOption itemValue="togolese" itemLabel="Togolese"/>
+                                                <apex:selectOption itemValue="tongan" itemLabel="Tongan"/>
+                                                <apex:selectOption itemValue="trinidadian or tobagonian" itemLabel="Trinidadian or Tobagonian"/>
+                                                <apex:selectOption itemValue="tunisian" itemLabel="Tunisian"/>
+                                                <apex:selectOption itemValue="turkish" itemLabel="Turkish"/>
+                                                <apex:selectOption itemValue="tuvaluan" itemLabel="Tuvaluan"/>
+                                                <apex:selectOption itemValue="ugandan" itemLabel="Ugandan"/>
+                                                <apex:selectOption itemValue="ukrainian" itemLabel="Ukrainian"/>
+                                                <apex:selectOption itemValue="uruguayan" itemLabel="Uruguayan"/>
+                                                <apex:selectOption itemValue="uzbekistani" itemLabel="Uzbekistani"/>
+                                                <apex:selectOption itemValue="venezuelan" itemLabel="Venezuelan"/>
+                                                <apex:selectOption itemValue="vietnamese" itemLabel="Vietnamese"/>
+                                                <apex:selectOption itemValue="welsh" itemLabel="Welsh"/>
+                                                <apex:selectOption itemValue="yemenite" itemLabel="Yemenite"/>
+                                                <apex:selectOption itemValue="zambian" itemLabel="Zambian"/>
+                                                <apex:selectOption itemValue="zimbabwean" itemLabel="Zimbabwean"/> 
+                                            </apex:selectList>
+
+                                        </div>
+
+                                    </li>            
+                                    <li class="slds-form-element slds-hint-parent">
+                                        <div class="input-group btn-group slds-align_absolute-center" style="max-width:300px;">													
+                                            <label class="col-xs-6 control-label" style="font-size: small;">First Name</label> 
+                                            <apex:inputText styleClass="slds-input slds-align_absolute-center" id="idFirstName" value="{!sFirstName}" style="font-size: small;height:30px;"/>
+                                        </div>
+                                    </li>
+                                    <li class="slds-form-element slds-hint-parent">
+                                        <div class="input-group btn-group slds-align_absolute-center" style="max-width:300px;">													
+                                            <label class="col-xs-6 control-label" style="font-size: small;">Last Name</label> 
+                                            <apex:inputText styleClass="slds-input slds-align_absolute-center" id="idLastName" value="{!sLastName}" style="font-size: small;height:30px;"/>
+                                        </div>
+                                    </li> 
+                                    
+                                    <li class="slds-form-element slds-hint-parent">
+                                        <div class="input-group btn-group slds-align_absolute-center" style="max-width:300px;">	
+                                            <label class="col-xs-6 control-label" style="font-size: small;">Mobile Nr</label> 
+                                            <apex:inputText styleClass="slds-input slds-align_absolute-center" id="idPhone" value="{!sPhone}" style="font-size: small;height:30px;"/>                                            
+                                        </div>
+                                    </li> 
+                                    <li class="slds-form-element slds-hint-parent">
+                                        <div class="input-group btn-group slds-align_absolute-center" style="max-width:300px;">	
+                                            <label class="col-xs-6 control-label" style="font-size: small;">Email</label> 
+                                            <apex:inputText styleClass="slds-input slds-align_absolute-center" id="idEmail" value="{!sEmail}" style="font-size: small;height:30px;"/>                                            
+                                        </div>
+                                    </li>   
+                                    <li class="slds-form-element slds-hint-parent">
+                                        <div class="input-group btn-group slds-align_absolute-center" style="max-width:300px;">	
+                                            <label class="col-xs-6 control-label" style="font-size: small;">Gender</label> 
+                                            <apex:selectList styleClass="slds-input slds-align_absolute-center" id="idGender" value="{!gender}" size="1"  style="font-size: small;height:30px;">
+                                                <apex:selectOption itemValue="" itemLabel="- Please Select -"/>
+                                                <apex:selectOption itemValue="Male" itemLabel="Male"/>
+                                                <apex:selectOption itemValue="Female" itemLabel="Female"/>
+                                            </apex:selectList>                                           
+                                        </div>
+                                    </li> 
+                                     <li class="slds-form-element slds-hint-parent">
+                                        <div class="input-group btn-group slds-align_absolute-center" style="max-width:300px;">	
+                                            <label class="col-xs-6 control-label" style="font-size: small;">PIN</label> 
+                                            <apex:inputSecret styleClass="slds-input slds-align_absolute-center" id="idPIN" value="{!sPIN}" style="font-size: small;height:30px;"/>                                            
+                                        </div>
+                                    </li> 
+                                    <li class="slds-form-element slds-hint-parent">
+                                        <div class="input-group btn-group slds-align_absolute-center" style="max-width:300px;">	
+                                            <label class="col-xs-6 control-label" style="font-size: small;">Repreat PIN</label> 
+                                            <apex:inputSecret styleClass="slds-input slds-align_absolute-center" id="idPIN2" value="{!sPIN2}" style="font-size: small;height:30px;"/>                                            
+                                        </div>
+                                    </li>                                  
+                                             
+                                    <li class="slds-form-element slds-hint-parent ">
+                                        <div class="g-recaptcha slds-align_absolute-center" data-sitekey="6LfcyFUUAAAAAPo8powdix74mO2duEbUmiKfK5j2"></div>
+                                    </li>  
+                                    <li class="slds-form-element slds-hint-parent ">
+                                        <apex:pageMessages id="idMess"/>
+                                    </li>
+                                    <li class="slds-form-element slds-hint-parent">
+                                        <apex:commandButton styleClass="slds-button slds-button_success slds-align_absolute-center" value="Register" style="color:rgb(255,255,255); align-items:flex-start; width:300px; height:47px; font-size: medium;"  rerender="block1,idMess,idform" action="{!register}" reRender="idform,idMess"/>                                   
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </apex:outputPanel> 
+        </apex:form>  
+    </html>
+</apex:page>

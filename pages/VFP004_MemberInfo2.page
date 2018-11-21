@@ -1,0 +1,141 @@
+<apex:page showHeader="false" sidebar="false" cache="false"  controller="VFC004_MemberInfo"  docType="html-5.0"> 
+    <html>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>       
+         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>       
+        <apex:stylesheet value="{!URLFOR($Resource.fontawesome,'/font-awesome-4.7.0/css/font-awesome.css')}"/>
+        <style type="text/css">
+            .slds-scope.slds-input {
+            max-width: 200px;
+            }
+            .checkbox {
+            min-height: 1rem !important;
+            max-width: 3% !important;
+            }
+            .welcomecontainer {
+            margin: 45px 0;
+            color: #0c0c99;
+            font-size: medium;
+            font-style: normal;
+            font-weight: bold;
+            }
+            .carouseltitle {
+            color: #0c0c99;
+            font-size: medium;
+            font-style: normal;
+            font-weight: bold;            
+            }
+            
+        </style>
+       
+      <apex:slds rendered="true"/>
+        <apex:form id="idform" rendered="{!bRender}">  
+            <apex:outputPanel id="page">
+                <div class="demo-only slds-grid slds-align_absolute-center" style="height: 845px; max-width: 420px; background-color: rgb(244, 246, 249); padding: 1rem; background-position: initial initial; background-repeat: initial initial;">
+                    <div class="slds-panel slds-grid slds-grid_vertical slds-nowrap">
+                        <div class="slds-form slds-form_stacked slds-grow slds-scrollable_y">
+                            <div class="slds-panel__section">
+                                <div class="slds-media slds-align_absolute-center">
+                                    <apex:image value="{!pr.Logo__c}" id="theImage" width="150px"></apex:image>
+                                </div>
+                            </div>
+                       
+                            <div class="slds-panel__section">
+                                <ul>
+                                   <li class="slds-form-element slds-hint-parent">
+                                        <div class="welcomecontainer slds-align_absolute-center">Your {!pr.Title__c} membership</div>                            
+                                    </li> 
+                                     
+     
+                                    <li class="slds-form-element slds-hint-parent">
+                                        <div class="input-group btn-group slds-align_absolute-center" style="max-width:300px;">													
+                                            <label class="col-xs-6 control-label" style="font-size: small;">Member</label> 
+                                            <apex:inputText styleClass="slds-input slds-align_absolute-center" id="idFullName" value="{!mem.Full_Name__c}" style="font-size: small;height:30px;" disabled="true"></apex:inputText>
+                                        </div>
+                                    </li>
+                                     <li class="slds-form-element slds-hint-parent">
+                                        <div class="input-group btn-group slds-align_absolute-center" style="max-width:300px;">													
+                                            <label class="col-xs-6 control-label" style="font-size: small;">Tier</label> 
+                                            <apex:inputText styleClass="slds-input slds-align_absolute-center" id="idTier" value="{!mem.Tier_Name__c}" style="font-size: small;height:30px;" disabled="true"></apex:inputText>
+                                        </div>
+                                    </li>     
+                                     <li class="slds-form-element slds-hint-parent">
+                                        <div class="input-group btn-group slds-align_absolute-center" style="max-width:300px;">													
+                                            <label class="col-xs-6 control-label" style="font-size: small;">Discount %</label> 
+                                            <apex:inputText styleClass="slds-input slds-align_absolute-center" id="idDiscount" value="{!mem.Discount__c}" style="font-size: small;height:30px;" disabled="true"></apex:inputText>
+                                         </div>
+                                    </li> 
+                                    <li class="slds-form-element slds-hint-parent">
+                                        <div class="input-group btn-group slds-align_absolute-center" style="max-width:300px;">													
+                                            <label class="col-xs-6 control-label" style="font-size: small;">Points</label> 
+                                            <apex:inputText styleClass="slds-input slds-align_absolute-center" id="idPoints2" value="{!mem.CVL__Points_2__c}" style="font-size: small;height:30px;" disabled="true"></apex:inputText>
+                                        </div>
+                                    </li>
+                                    
+                                    <div class="slds-panel__section" id ="carousel" rendered="{!bRenderPromotion}">
+                                        <h3 class="slds-text-heading_small slds-m-bottom_medium slds-align_absolute-center"><apex:outputText value="Your coupons" styleClass="carouseltitle"/></h3>  
+                                        <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                                            <!-- Indicators -->
+                                            <ol class="carousel-indicators">
+                                                <apex:variable var="count" value="{!0}"/>
+                                                <li data-target="#quote-carousel" data-slide-to="{!count}" class="active" ></li>
+                                                <apex:repeat id="WrapListRepeatId" value="{!vouchers}" var="res">
+                                                    <apex:variable value="{!count+1}" var="count"/>  <!--increment-->          
+                                                    <li data-target="#quote-carousel" data-slide-to="{!count}" class="progress{!count}"></li>
+                                                    
+                                                </apex:repeat>
+                                            </ol>
+                                            
+                                            <!-- Wrapper for slides -->
+                                            <div class="carousel-inner" role="listbox">
+                                                <!-- Quote 1 -->
+                                                <div class="item active">
+                                                    <div class="slds-media">
+                                                        <div class="slds-media__figure slds-border_bottom slds-border_top slds-border_left slds-border_right"> 
+                                                            <apex:outputLink value="{!curPromo.Reedem_URL__c}"> 
+                                                                <apex:image value="{!curPromo.Campaign_Image__c}" width="350px" ></apex:image> 
+                                                            </apex:outputLink> 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <script>
+                                                var count1 = 1;
+                                                </script>
+                                                <apex:variable var="count1" value="{!1}"/>
+                                                
+                                                <apex:repeat id="WrapListRepeatId2" value="{!vouchers}" var="res">
+                                                    <div class="item">
+                                                        <div class="slds-media">
+                                                            <div class="slds-media__figure slds-border_bottom slds-border_top slds-border_left slds-border_right">
+                                                                <apex:outputLink value="{!res.Reedem_URL__c}"> 
+                                                                    <apex:image value="{!res.Campaign_Image__c}" width="350px" height="300px" >
+                                                                    </apex:image>  
+                                                                </apex:outputLink> 
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <apex:variable value="{!count1+1}" var="count1"/>
+                                                </apex:repeat>
+                                            </div>
+                                            <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                                                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                            <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                                                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                                <span class="sr-only">Next</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </apex:outputPanel> 
+        </apex:form>  -->
+    </html>
+</apex:page>

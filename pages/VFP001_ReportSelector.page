@@ -1,0 +1,39 @@
+<apex:page showHeader="false" docType="html-5.0" extensions="SM002_Report" standardController="Promo_Campaign__c" > 
+    <c:loadingDialog title="Processing"/> 
+    <style>
+        .bglinked{
+            background-color: lightgray;
+        }
+    </style>  
+        <script type="text/javascript">
+    
+      var pageLoad = window.onload;
+          window.onload = function() {
+              setTimeout(function(){
+              },100);
+          }
+        </script>
+    <apex:form id="pageForm">       
+        <apex:pageBlock title="" id="page">   
+            <apex:pageBlockSection columns="1" collapsible="false" title="" id="shippingAddressSection">  
+                <apex:pageBlockSectionItem > 
+
+                    <apex:outputLabel value="{!$Label.VFP_Report_Name}" for="Web_Country"/>
+                    <apex:outputPanel layout="block">                    
+                    <apex:selectList style="width: 100;" value="{!sReportId}" size="1" multiselect="false" styleClass="objFields" id="Web_Country"> <!-- onchange="updateStatePicklist(this.value);" -->
+                        <apex:selectOptions value="{!aReports}"/>                                                    
+                    </apex:selectList> 
+                <apex:commandButton action="{!save}" value="{!$Label.VFP_Save}" rerender="pageForm" onclick="bInProgress=true; showLoadingDialog();" oncomplete="bInProgress=false; hideLoadingDialog();" />
+                        
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >   
+                    <!--                       <apex:selectList style="width: 100;" value="{!Case.ShippingState__c}" size="1" multiselect="false" styleClass="objFields">
+<apex:selectOptions value="{!aState}"/>                                                    
+</apex:selectList> 
+-->                
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>                      
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,72 @@
+<apex:page showHeader="false" sidebar="false" cache="false"  controller="VFC002_ReedemVoucher"  docType="html-5.0"> 
+    <html>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+        
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+        <apex:stylesheet value="{!URLFOR($Resource.fontawesome,'/font-awesome-4.7.0/css/font-awesome.css')}"/>
+        <style type="text/css">
+            .slds-scope.slds-input {
+            max-width: 200px;
+            }
+            .checkbox {
+            min-height: 1rem !important;
+            max-width: 3% !important;
+            }
+            .welcomecontainer {
+            margin: 45px 0;
+            color: #0c0c99;
+            font-size: medium;
+            font-style: normal;
+            font-weight: bold;
+            }		
+            
+        </style>
+        <apex:slds rendered="true"/>
+        <apex:pageMessages id="idMess"/>
+        <apex:form id="idform" rendered="{!bRender}">  
+            <apex:outputPanel id="page">
+                <div class="demo-only slds-grid slds-align_absolute-center" style="height: 845px; max-width: 420px; background-color: rgb(244, 246, 249); padding: 1rem; background-position: initial initial; background-repeat: initial initial;">
+                    <div class="slds-panel slds-grid slds-grid_vertical slds-nowrap">
+                        <div class="slds-form slds-form_stacked slds-grow slds-scrollable_y">
+                            <div class="slds-panel__section">
+                                <div class="slds-media slds-align_absolute-center">
+                                    <apex:image value="{!imageURL}" id="theImage" width="150px"></apex:image>
+                                </div>
+                            </div>
+                            
+                            <div class="slds-panel__section">
+                                <ul>
+                                    <li class="slds-form-element slds-hint-parent">
+                                        <div class="welcomecontainer slds-align_absolute-center"> Please ask the cashier to enter their PIN</div>                            
+                                    </li>     
+                                    <li class="slds-form-element slds-hint-parent">                                    
+                                        <div class="input-group btn-group slds-align_absolute-center" id="userid" style="max-width:300px;">													
+                                            <span class="input-group-addon"><i class="fa fa-user"></i></span>	 
+                                            <apex:inputText styleClass="slds-input slds-align_absolute-center" id="idUserName" value="{!sMemberName}"  style="font-size: medium;height:30px;" disabled="true"/>
+                                        </div>
+
+                                    </li>            
+                                    <li class="slds-form-element slds-hint-parent">
+                                        <div class="input-group btn-group slds-align_absolute-center" id="grppin" style="max-width:300px;">													
+                                            <span class="input-group-addon" style ="padding:16;"><i class="fa fa-money" ></i></span>	 
+                                            <apex:inputText styleClass="slds-input slds-align_absolute-center" id="idCurrency" value="{!dVal}"  style="font-size: small;height:30px;"/>
+                                        </div>
+                                    </li>
+                                    <li class="slds-form-element slds-hint-parent">
+                                        <div class="input-group btn-group slds-align_absolute-center" id="grppin" style="max-width:300px;">													
+                                            <span class="input-group-addon"><i class="fa fa-phone"></i></span>													
+                                            <apex:inputSecret styleClass="slds-input slds-align_absolute-center" id="idPIN" value="{!sPIN}" style="font-size: medium;height:30px;"/>
+                                        </div>
+                                    </li>
+                                    <li class="slds-form-element slds-hint-parent">
+                                        <apex:commandButton styleClass="slds-button slds-button_success slds-align_absolute-center" value="Reedem" style="color:rgb(255,255,255); align-items:flex-start; width:300px; height:47px; font-size: medium;"  rerender="block1,idMess,idform" action="{!doReedem}" reRender="idform,idMess"/>                                   
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </apex:outputPanel> 
+        </apex:form>  
+    </html>
+</apex:page>

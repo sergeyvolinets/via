@@ -1,0 +1,3 @@
+<apex:page standardController="Promo_Campaign__c" extensions="SM021_GenerateCodes"  action="{!onGenerate}">
+<apex:pageMessages />
+</apex:page>
